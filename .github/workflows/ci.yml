@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Quality and tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v7.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 24.14.1
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: Run formatting, linting, type checks, tests, coverage, and build
+        run: npm run check
+
+      - name: Check package contents
+        run: npm pack --dry-run
+
+      - name: Upload build and coverage artifacts
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: api-contract-checker-${{ github.sha }}
+          path: |
+            dist/
+            coverage/coverage-summary.json
+          if-no-files-found: error
+          retention-days: 14
+
+  container:
+    name: Container build
+    needs: quality
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v7.0.1
+
+      - name: Build the production image
+        run: docker build --tag api-contract-checker:ci .
+
+      - name: Verify the non-root runtime and CLI entrypoint
+        run: |
+          test "$(docker run --rm --entrypoint id api-contract-checker:ci -u)" != "0"
+          docker run --rm api-contract-checker:ci --help
