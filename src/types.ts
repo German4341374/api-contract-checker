@@ -1,11 +1,12 @@
 import type { OpenAPIV3 } from "openapi-types";
 
 export type CheckKind = "request" | "status" | "content-type" | "schema";
+export type IgnorableCheckKind = Exclude<CheckKind, "request">;
 export type ReportFormat = "console" | "json" | "markdown" | "junit";
 
 export interface IgnoreRules {
   readonly operations: readonly string[];
-  readonly checks: Readonly<Record<string, readonly CheckKind[]>>;
+  readonly checks: Readonly<Record<string, readonly IgnorableCheckKind[]>>;
 }
 
 export interface CheckerConfig {

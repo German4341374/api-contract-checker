@@ -65,7 +65,7 @@ ignore:
     const badLimit = await configFile("concurrency: 0\n");
     await expect(loadConfig(badLimit)).rejects.toThrow("greater than or equal to 1");
 
-    const badIgnore = await configFile("ignore:\n  checks:\n    GET /x: [body]\n");
+    const badIgnore = await configFile("ignore:\n  checks:\n    GET /x: [request]\n");
     await expect(loadConfig(badIgnore)).rejects.toThrow("unsupported check name");
   });
 });

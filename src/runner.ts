@@ -9,6 +9,7 @@ import type {
   CheckResult,
   ContractReport,
   EndpointCheck,
+  IgnorableCheckKind,
   RuntimeOptions,
 } from "./types.js";
 
@@ -30,12 +31,8 @@ function buildUrl(baseUrl: string, requestPath: string): string {
   }
 }
 
-function ignored(options: RuntimeOptions, operation: string, check: string): boolean {
-  return (
-    options.ignore.checks[operation]?.includes(
-      check as "request" | "status" | "content-type" | "schema",
-    ) ?? false
-  );
+function ignored(options: RuntimeOptions, operation: string, check: IgnorableCheckKind): boolean {
+  return options.ignore.checks[operation]?.includes(check) ?? false;
 }
 
 function parseResponseBody(body: string): { value?: unknown; error?: CheckFailure } {

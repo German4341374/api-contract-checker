@@ -1,9 +1,9 @@
 import { readFile } from "node:fs/promises";
 import { parse } from "yaml";
 import { CheckerError } from "./errors.js";
-import type { CheckerConfig, CheckKind } from "./types.js";
+import type { CheckerConfig, IgnorableCheckKind } from "./types.js";
 
-const CHECK_KINDS = new Set<CheckKind>(["request", "status", "content-type", "schema"]);
+const CHECK_KINDS = new Set<IgnorableCheckKind>(["status", "content-type", "schema"]);
 
 function asRecord(value: unknown, label: string): Record<string, unknown> {
   if (typeof value !== "object" || value === null || Array.isArray(value)) {
@@ -73,13 +73,13 @@ function parseIgnore(value: unknown): CheckerConfig["ignore"] {
   const ignore = asRecord(value, "ignore");
   const operations = parseStringArray(ignore.operations, "ignore.operations");
   const rawChecks = ignore.checks === undefined ? {} : asRecord(ignore.checks, "ignore.checks");
-  const checks: Record<string, CheckKind[]> = {};
+  const checks: Record<string, IgnorableCheckKind[]> = {};
   for (const [operation, rawKinds] of Object.entries(rawChecks)) {
     const kinds = parseStringArray(rawKinds, `ignore.checks.${operation}`);
-    if (kinds.some((kind) => !CHECK_KINDS.has(kind as CheckKind))) {
+    if (kinds.some((kind) => !CHECK_KINDS.has(kind as IgnorableCheckKind))) {
       throw new CheckerError(`ignore.checks.${operation} contains an unsupported check name.`);
     }
-    checks[operation] = kinds as CheckKind[];
+    checks[operation] = kinds as IgnorableCheckKind[];
   }
   return { operations, checks };
 }

@@ -11,9 +11,11 @@ function operationParameters(
   pathItem: OpenAPIV3.PathItemObject,
   operation: OpenAPIV3.OperationObject,
 ): OpenAPIV3.ParameterObject[] {
-  return [...(pathItem.parameters ?? []), ...(operation.parameters ?? [])].filter(
-    (parameter): parameter is OpenAPIV3.ParameterObject => !isReference(parameter),
-  );
+  const parameters = new Map<string, OpenAPIV3.ParameterObject>();
+  for (const parameter of [...(pathItem.parameters ?? []), ...(operation.parameters ?? [])]) {
+    if (!isReference(parameter)) parameters.set(`${parameter.in}:${parameter.name}`, parameter);
+  }
+  return [...parameters.values()];
 }
 
 function resolveRequestPath(
