@@ -1,0 +1,14 @@
+baseUrl: http://localhost:3000
+timeoutMs: 2000
+concurrency: 3
+retries: 2
+
+# Values are grouped by OpenAPI path or by an operation key such as "GET /users/{userId}".
+pathParameters: {}
+
+# Header values are read from environment variables. Never put a secret value here.
+headers: {}
+
+ignore:
+  operations: []
+  checks: {}

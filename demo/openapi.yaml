@@ -1,0 +1,66 @@
+openapi: 3.0.3
+info:
+  title: API Contract Checker Demo
+  version: 1.0.0
+paths:
+  /healthy:
+    get:
+      operationId: getHealthy
+      responses:
+        "200":
+          description: A contract-compliant response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Service"
+  /wrong-status:
+    get:
+      operationId: getWrongStatus
+      responses:
+        "200":
+          description: The mock intentionally returns HTTP 418
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [message]
+                properties:
+                  message:
+                    type: string
+  /wrong-schema:
+    get:
+      operationId: getWrongSchema
+      responses:
+        "200":
+          description: The mock intentionally violates this schema
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Service"
+components:
+  schemas:
+    Service:
+      type: object
+      additionalProperties: false
+      required: [id, name, state, profile, tags]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        state:
+          type: string
+          enum: [ready, busy]
+        profile:
+          type: object
+          required: [active]
+          properties:
+            active:
+              type: boolean
+            note:
+              type: string
+              nullable: true
+        tags:
+          type: array
+          items:
+            type: string
