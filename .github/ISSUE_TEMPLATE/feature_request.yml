@@ -1,0 +1,23 @@
+name: Feature request
+description: Propose a focused addition to the supported OpenAPI subset.
+title: "feat: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use case
+      description: Describe the contract-checking problem and why it matters.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: Describe workarounds or simpler options.
