@@ -167,7 +167,7 @@ Expected summary:
 Summary: 1 passed, 2 failed, 0 skipped (3 total)
 ```
 
-The demo intentionally exits with code `1` because it demonstrates detected contract failures.
+The demo intentionally exits with code `1`: two fixture endpoints violate the bundled contract.
 
 Generate each report format:
 
