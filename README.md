@@ -4,9 +4,11 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-24.14.1-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
 
-`api-contract-checker` is a focused TypeScript CLI that sends safe `GET` requests to a live REST API and compares its responses with an OpenAPI 3.x document. It is designed for smoke-level contract verification in local development and CI: failures explain the expected status, media type, or schema value and return a non-zero exit code.
+Give this tool an OpenAPI file and an API URL. It calls the supported GET endpoints
+and tells you when a response has the wrong status, a missing field, or an unexpected value.
 
-The project intentionally implements a documented subset of OpenAPI. It is not a complete request generator or conformance implementation.
+You can run it from your terminal or add it to CI. It only handles the OpenAPI features
+listed below, so check that list before using it with a new API.
 
 ## Use cases
 
